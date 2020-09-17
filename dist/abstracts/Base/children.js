@@ -5,6 +5,7 @@ var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefau
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.getComponentElements = getComponentElements;
 exports.getChildren = getChildren;
 exports.default = void 0;
 
@@ -56,6 +57,22 @@ function getChild(el, ComponentClass, parent) {
   return asyncComponent;
 }
 /**
+ * Get a list of elements based on the name of a component.
+ * @param  {String}         nameOrSelector The name or selector to used for this component.
+ * @return {Array<Element>}                A list of elements on which the component should be mounted.
+ */
+
+
+function getComponentElements(nameOrSelector) {
+  var elements = document.querySelectorAll("[data-component=\"".concat(nameOrSelector, "\"]")); // If no child component found with the default selector, try a classic DOM selector
+
+  if (elements.length === 0) {
+    elements = document.querySelectorAll(nameOrSelector);
+  }
+
+  return Array.from(elements);
+}
+/**
  *
  * @param  {Base}        instance   The component's instance.
  * @param  {HTMLElement} element    The component's root element
@@ -70,12 +87,7 @@ function getChildren(instance, element, components) {
         name = _ref2[0],
         ComponentClass = _ref2[1];
 
-    var selector = "[data-component=\"".concat(name, "\"]");
-    var elements = Array.from(element.querySelectorAll(selector)); // If no child component found with the default selector, the name must be a DOM selector
-
-    if (elements.length === 0) {
-      elements = Array.from(element.querySelectorAll(name));
-    }
+    var elements = getComponentElements(name);
 
     if (elements.length === 0) {
       return acc;
