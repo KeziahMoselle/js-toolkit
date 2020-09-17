@@ -126,7 +126,7 @@ export default class Base extends EventManager {
 
     this.$on('destroyed', () => {
       this.$isMounted = false;
-      unbindMethods.forEach(method => method());
+      unbindMethods.forEach((method) => method());
       destroyComponents(this);
     });
 
@@ -208,7 +208,7 @@ export default class Base extends EventManager {
       );
     }
 
-    return getComponentElements(nameOrSelector).map(el => new this(el));
+    return getComponentElements(nameOrSelector).map((el) => new this(el));
   }
 }
 
