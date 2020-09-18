@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "outDir": "dist-ts/",
+    "target": "ES5",
+    "lib": ["ES5","ES6","DOM"],
+    "strict": false,
+    "sourceMap": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "esModuleInterop": true
+  },
+  "include": ["./src-ts/utils/**/*", "./src-ts/abstracts/**/*"]
+}
