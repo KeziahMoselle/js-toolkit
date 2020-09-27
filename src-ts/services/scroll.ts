@@ -1,7 +1,32 @@
-import Service from '../abstracts/Service';
+import Service, {
+  PropsInterface,
+  ServiceInterface,
+  PublicServiceInterface,
+} from '../abstracts/Service';
 import throttle from '../utils/throttle';
 import debounce from '../utils/debounce';
 import nextFrame from '../utils/nextFrame';
+
+export interface ScrollPropsInterface {
+  readonly x: number;
+  readonly y: number;
+  readonly changed: { x: boolean; y: boolean };
+  readonly last: { x: number; y: number };
+  readonly delta: { x: number; y: number };
+  readonly progress: { x: number; y: number };
+  readonly max: { x: number; y: number };
+}
+
+export interface ScrollServiceInterface extends ServiceInterface {
+  y: number;
+  yLast: number;
+  x: number;
+  xLast: number;
+}
+
+export interface ScrollPublicServiceInterface extends PublicServiceInterface {
+  props(): ScrollPropsInterface;
+}
 
 /**
  * Scroll service
@@ -14,7 +39,7 @@ import nextFrame from '../utils/nextFrame';
  * props();
  * ```
  */
-class Scroll extends Service {
+class Scroll extends Service implements ScrollServiceInterface {
   /** @type {Number} The y scroll position. */
   y = window.pageYOffset;
 
@@ -48,7 +73,7 @@ class Scroll extends Service {
     }, 32).bind(this);
 
     // Fire the `scrolled` method on document scroll
-    document.addEventListener('scroll', this.handler, { passive: true });
+    document.addEventListener('scroll', this.handler as EventListener, { passive: true });
   }
 
   /**
@@ -57,7 +82,7 @@ class Scroll extends Service {
    * @return {void}
    */
   kill() {
-    document.removeEventListener('scroll', this.handler);
+    document.removeEventListener('scroll', this.handler as EventListener);
   }
 
   /**

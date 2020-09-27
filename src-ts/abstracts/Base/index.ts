@@ -62,7 +62,7 @@ export default class Base extends EventManager implements BaseInterface {
    * Get the component's merged config and options.
    * @return {Object}
    */
-  get $options(): Record<string, unknown> {
+  get $options(): OptionsInterface {
     return getOptions(this, this.$el, this.config);
   }
 

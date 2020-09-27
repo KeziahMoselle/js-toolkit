@@ -30,6 +30,9 @@ class Pointer extends Service {
   /** @type {Number} The x previous pointer position. */
   xLast = window.innerWidth / 2;
 
+  /** @type {Boolean} True if the requestAnimationFrame loop is running. */
+  hasRaf = false
+
   /**
    * Bind the handler to the mousemove and touchmove events.
    * Bind the up and down handler to the mousedown, mouseup, touchstart and touchend events.
@@ -62,9 +65,9 @@ class Pointer extends Service {
     this.downHandler = this.downHandler.bind(this);
     this.upHandler = this.upHandler.bind(this);
 
-    document.documentElement.addEventListener('mouseenter', this.handler, { once: true });
-    document.addEventListener('mousemove', this.handler, { passive: true });
-    document.addEventListener('touchmove', this.handler, { passive: true });
+    document.documentElement.addEventListener('mouseenter', this.handler as EventListener, { once: true });
+    document.addEventListener('mousemove', this.handler as EventListener, { passive: true });
+    document.addEventListener('touchmove', this.handler as EventListener, { passive: true });
     document.addEventListener('mousedown', this.downHandler, { passive: true });
     document.addEventListener('touchstart', this.downHandler, { passive: true });
     document.addEventListener('mouseup', this.upHandler, { passive: true });
@@ -77,8 +80,8 @@ class Pointer extends Service {
    * @return {void}
    */
   kill() {
-    document.removeEventListener('mousemove', this.handler);
-    document.removeEventListener('touchmove', this.handler);
+    document.removeEventListener('mousemove', this.handler as EventListener);
+    document.removeEventListener('touchmove', this.handler as EventListener);
     document.removeEventListener('mousedown', this.downHandler);
     document.removeEventListener('touchstart', this.downHandler);
     document.removeEventListener('mouseup', this.upHandler);

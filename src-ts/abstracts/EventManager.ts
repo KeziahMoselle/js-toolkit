@@ -1,4 +1,4 @@
-interface EventManagerListener {
+export interface EventManagerListener {
   (...args: unknown[]): void;
 }
 

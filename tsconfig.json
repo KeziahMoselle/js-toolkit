@@ -2,11 +2,12 @@
   "compilerOptions": {
     "outDir": "dist-ts/",
     "target": "ES5",
-    "lib": ["ES5","ES6","DOM"],
-    "strict": false,
+    "lib": ["ES5", "ES6", "ES2017", "ES2018", "DOM"],
     "sourceMap": true,
+    "declaration": true,
     "suppressImplicitAnyIndexErrors": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "allowJs": true
   },
-  "include": ["./src-ts/utils/**/*", "./src-ts/abstracts/**/*"]
+  "include": ["./src-ts/**/*"]
 }

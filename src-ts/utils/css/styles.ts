@@ -7,12 +7,16 @@ import isObject from '../object/isObject';
  * @param {CSSStyleDeclaration} styles  An object of styles properties and values.
  * @param {String}              method  The method to use: add or remove.
  */
-export default function setStyles(element:HTMLElement, styles:CSSStyleDeclaration, method = 'add') {
+export default function setStyles(
+  element: HTMLElement,
+  styles: CSSStyleDeclaration,
+  method = 'add',
+): void {
   if (!element || !styles || !isObject(styles)) {
     return;
   }
 
-  Object.entries(styles).forEach(([ prop, value ]:[string,string]) => {
+  Object.entries(styles).forEach(([ prop, value ]: [string, string]) => {
     element.style[prop] = method === 'add' ? value : '';
   });
 }
@@ -24,7 +28,7 @@ export default function setStyles(element:HTMLElement, styles:CSSStyleDeclaratio
  * @param {String}      styles A string of class names.
  * @return {void}
  */
-export function add(element:HTMLElement, styles:CSSStyleDeclaration) {
+export function add(element: HTMLElement, styles: CSSStyleDeclaration):void {
   setStyles(element, styles);
 }
 
@@ -35,6 +39,6 @@ export function add(element:HTMLElement, styles:CSSStyleDeclaration) {
  * @param  {String}      styles A string of class names.
  * @return {void}
  */
-export function remove(element:HTMLElement, styles:CSSStyleDeclaration) {
+export function remove(element: HTMLElement, styles: CSSStyleDeclaration):void {
   setStyles(element, styles, 'remove');
 }

@@ -6,7 +6,7 @@ export interface BaseElement extends HTMLElement {
 }
 
 export interface Options {
-  [name: string]: unknown;
+  [name: string]: any;
 }
 
 export interface Config {
@@ -14,7 +14,7 @@ export interface Config {
   components?: { [name: string]: Base };
   debug?: boolean;
   log?: boolean;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 export interface Refs {
@@ -25,9 +25,10 @@ export interface Children {
   [name: string]: Base[];
 }
 
-export interface BaseStatic {
+export interface BaseConstructor<B extends Base = Base> {
   __isBase__: boolean;
   $factory(nameOrSelector:string):Base[];
+  new (element: BaseElement):this;
 }
 
 export interface Base extends EventManagerInterface {

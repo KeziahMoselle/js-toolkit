@@ -1,5 +1,45 @@
-import Service from '../abstracts/Service';
+import Service, {
+  PropsInterface,
+  ServiceInterface,
+  ServiceConstructor,
+  PublicServiceInterface,
+} from '../abstracts/Service';
 import debounce from '../utils/debounce';
+
+enum ResizeOrientation {
+  Square = 'square',
+  Portrait = 'portrait',
+  Landscape = 'landscape',
+}
+
+export interface ResizePropsInterface extends PropsInterface {
+  readonly width: number;
+  readonly height: number;
+  readonly ratio: number;
+  orientation: ResizeOrientation;
+  breakpoint?: string;
+  breakpoints?: string[];
+}
+
+interface ResizeObserverInterface {
+  [key:string]: any;
+}
+
+export interface ResizeServiceInterface extends ServiceInterface {
+  resizeObserver: ResizeObserverInterface;
+  readonly breakpoint: string;
+  readonly breakpoints: string[];
+
+  readonly props: ResizePropsInterface;
+}
+
+export interface PublicResizeServiceInterface extends PublicServiceInterface {
+  props(): ResizePropsInterface;
+}
+
+export interface ResizeServiceConstructor extends ServiceConstructor {
+  new(): ResizeServiceInterface;
+}
 
 /**
  * Resize service
@@ -12,7 +52,9 @@ import debounce from '../utils/debounce';
  * props();
  * ```
  */
-class Resize extends Service {
+class Resize extends Service implements ResizeServiceInterface {
+  resizeObserver: ResizeObserverInterface;
+
   /**
    * Bind the handler to the resize event.
    *
@@ -24,10 +66,11 @@ class Resize extends Service {
     }).bind(this);
 
     if (this.canUseResizeObserver) {
+      // @ts-ignore
       this.resizeObserver = new ResizeObserver(this.handler);
       this.resizeObserver.observe(document.documentElement);
     } else {
-      window.addEventListener('resize', this.handler);
+      window.addEventListener('resize', this.handler as EventListener);
     }
   }
 
@@ -40,7 +83,7 @@ class Resize extends Service {
     if (this.canUseResizeObserver) {
       this.resizeObserver.disconnect();
     } else {
-      window.removeEventListener('resize', this.handler);
+      window.removeEventListener('resize', this.handler as EventListener);
     }
     delete this.resizeObserver;
   }
@@ -51,19 +94,19 @@ class Resize extends Service {
    * @type {Object}
    */
   get props() {
-    const props = {
+    const props:ResizePropsInterface = {
       width: window.innerWidth,
       height: window.innerHeight,
       ratio: window.innerWidth / window.innerHeight,
-      orientation: 'square',
+      orientation: ResizeOrientation.Square,
     };
 
     if (props.ratio > 1) {
-      props.orientation = 'landscape';
+      props.orientation = ResizeOrientation.Landscape;
     }
 
     if (props.ratio < 1) {
-      props.orientation = 'portrait';
+      props.orientation = ResizeOrientation.Portrait;
     }
 
     if (this.breakpointElement) {
@@ -111,6 +154,7 @@ class Resize extends Service {
    * @return {Boolean}
    */
   get canUseResizeObserver() {
+    // @ts-ignore
     return typeof window.ResizeObserver !== 'undefined';
   }
 }

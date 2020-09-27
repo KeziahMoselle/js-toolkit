@@ -1,4 +1,9 @@
-import Service, { ServiceInterface, PublicServiceInterface } from '../abstracts/Service';
+import Service, {
+  PropsInterface,
+  ServiceInterface,
+  ServiceConstructor,
+  PublicServiceInterface,
+} from '../abstracts/Service';
 import keyCodes from '../utils/keyCodes';
 import autoBind from '../utils/object/autoBind';
 
@@ -9,7 +14,7 @@ enum KeyServiceDirection {
   None = 'none',
 }
 
-export interface KeyServiceProps {
+export interface KeyPropsInterface extends PropsInterface {
   event: KeyboardEvent | null;
   triggered: number;
   direction: KeyServiceDirection;
@@ -22,13 +27,15 @@ export interface KeyServiceInterface extends ServiceInterface {
   event: KeyboardEvent | null;
   previousEvent: KeyboardEvent | null;
   triggered: number;
-  handler(event: KeyboardEvent): void;
-  add(key:string, callback:Function):KeyServiceInterface|ServiceInterface;
-  readonly props:KeyServiceProps;
+  readonly props: KeyPropsInterface;
 }
 
 export interface PublicKeyServiceInterface extends PublicServiceInterface {
-  props():KeyServiceProps;
+  props(): KeyPropsInterface;
+}
+
+export interface KeyServiceConstructor extends ServiceConstructor {
+  new(): KeyServiceInterface;
 }
 
 /**
@@ -61,9 +68,13 @@ class Key extends Service implements KeyServiceInterface {
    * @return {void}
    */
   init() {
-    autoBind(this, { include: [ 'handler' ] });
-    document.addEventListener('keydown', this.handler, { passive: false });
-    document.addEventListener('keyup', this.handler, { passive: false });
+    this.handler = (event: KeyboardEvent): void => {
+      this.event = event;
+      this.trigger(this.props);
+    };
+    autoBind(this, { include: ['handler'] });
+    document.addEventListener('keydown', this.handler as EventListener, { passive: false });
+    document.addEventListener('keyup', this.handler as EventListener, { passive: false });
   }
 
   /**
@@ -72,17 +83,8 @@ class Key extends Service implements KeyServiceInterface {
    * @return {void}
    */
   kill() {
-    document.removeEventListener('keydown', this.handler);
-    document.removeEventListener('keyup', this.handler);
-  }
-
-  /**
-   * Handler for the keyboard events.
-   * @param {KeyboardEvent} event The Event object.s
-   */
-  handler(event:KeyboardEvent):void {
-    this.event = event;
-    this.trigger(this.props);
+    document.removeEventListener('keydown', this.handler as EventListener);
+    document.removeEventListener('keyup', this.handler as EventListener);
   }
 
   /**
@@ -90,9 +92,9 @@ class Key extends Service implements KeyServiceInterface {
    *
    * @type {Object}
    */
-  get props():KeyServiceProps {
+  get props(): KeyPropsInterface {
     if (!this.event) {
-      const props: KeyServiceProps = {
+      const props: KeyPropsInterface = {
         event: this.event,
         triggered: this.triggered,
         direction: KeyServiceDirection.None,
@@ -103,7 +105,7 @@ class Key extends Service implements KeyServiceInterface {
       return props;
     }
 
-    const keys = Object.entries(keyCodes).reduce((acc, [ name, code ]) => {
+    const keys = Object.entries(keyCodes).reduce((acc, [name, code]) => {
       acc[name] = code === (this.event || {}).keyCode;
       return acc;
     }, {});

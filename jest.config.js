@@ -16,6 +16,6 @@ module.exports = {
     '<rootDir>/tests/__setup__/ResizeObserver.js',
   ],
   moduleNameMapper: {
-    '~(.*)$': '<rootDir>/src/$1',
+    '~(.*)$': '<rootDir>/dist-ts/$1',
   },
 };

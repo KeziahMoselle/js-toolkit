@@ -3,9 +3,10 @@ export interface PropsInterface {
 }
 
 export interface ServiceInterface {
-  callbacks: Record<string, Function>;
+  callbacks: MapInterface;
   isInit: boolean;
   readonly props: PropsInterface;
+  handler?: Function | EventListener;
   init(): void;
   kill(): void;
   add(key: string, callback: Function): ServiceInterface;
@@ -13,7 +14,6 @@ export interface ServiceInterface {
   get(key: string): Function;
   remove(key: string): ServiceInterface;
   trigger(...args: unknown[]): ServiceInterface;
-  [property: string]: unknown;
 }
 
 export interface PublicServiceInterface {
@@ -23,11 +23,25 @@ export interface PublicServiceInterface {
   props(): unknown;
 }
 
-/**
- * Service abstract class
- */
-export default class Service implements ServiceInterface {
-  callbacks: Record<string, Function> = new Map();
+export interface ServiceConstructor {
+  new (): ServiceInterface;
+}
+
+export interface MapInterface {
+  readonly size:number;
+  clear()
+  delete(key:string)
+  get(key:string)
+  has(key:string):boolean
+  set(key:string, value:unknown)
+  keys():Iterator<string>;
+  values():Iterator<unknown>;
+  entries():Iterator<[string,unknown]>;
+  forEach(callback:Function);
+}
+
+const Service:ServiceConstructor = class Service implements ServiceInterface {
+  callbacks: MapInterface = new Map();
 
   isInit = false;
 
@@ -134,3 +148,5 @@ export default class Service implements ServiceInterface {
     return this;
   }
 }
+
+export default Service;

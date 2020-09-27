@@ -2,12 +2,12 @@ import nextFrame from '../nextFrame';
 import * as classes from './classes';
 import * as styles from './styles';
 
-interface TransitionElement extends HTMLElement {
+export interface TransitionElement extends HTMLElement {
   __isTransitioning__?: boolean;
   __transitionEndHandler__?: EventListener;
 }
 
-interface Transition {
+export interface Transition {
   from?: string | CSSStyleDeclaration;
   active?: string | CSSStyleDeclaration;
   to?: string | CSSStyleDeclaration;
@@ -23,7 +23,7 @@ interface Transition {
 export function setClassesOrStyles(
   element: TransitionElement,
   classesOrStyles: undefined | string | CSSStyleDeclaration,
-  method: string = 'add',
+  method = 'add',
 ): void {
   if (!classesOrStyles) {
     return;
@@ -102,7 +102,7 @@ async function next(element: TransitionElement, classesOrStyles: Transition) {
 function end(
   element: TransitionElement,
   classesOrStyles: Transition,
-  mode: string = 'remove',
+  mode = 'remove',
 ): void {
   if (element.__transitionEndHandler__) {
     element.removeEventListener('transitionend', element.__transitionEndHandler__, false);
@@ -130,7 +130,7 @@ function end(
 export default async function transition(
   element: TransitionElement,
   name: string | Transition,
-  endMode: string = 'remove',
+  endMode = 'remove',
 ): Promise<void> {
   const classesOrStyles: Transition = typeof name === 'string'
     ? {
